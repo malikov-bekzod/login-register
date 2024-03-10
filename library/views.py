@@ -14,8 +14,6 @@ class BookListView(View):
 
         else:
             books = Book.objects.filter(title__icontains=search) | Book.objects.filter(description__icontains=search)
-            if not books:
-                return render(request, "not_found.html")
             context = {"books": books, "search": search}
             return render(request, "library/book_list.html", context)
 
@@ -23,5 +21,6 @@ class BookListView(View):
 class BookDetailView(View):
     def get(self, request, id):
         book = Book.objects.get(id=id)
-        context = {"book": book}
+        context = {"book": book,
+                   "id":id}
         return render(request, "library/book_detail.html", context)

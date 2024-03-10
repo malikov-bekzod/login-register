@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book list</title>
+    <style>
+        p {
+            font-size: 1.5em;
+            color: #808080; /* Grayish color */
+        }
+        i{
+            color:#3e3e3e
+        }
+    </style>
 </head>
 <body>
     <h1><a href="{% url 'book_list_page' %}">Book list:</a></h1>
@@ -11,10 +20,24 @@
         <input type="text" placeholder="Search for book" name = "search_book_name" value = "{{search}}">
         <button type="submit">Search</button>
     </form>
-    <ol>
-    {% for book in books %}
-        <li><a href="{% url 'book_detail_page' book.id %}">{{book.title}}</a></li>
-    {% endfor %}
-    </ol>
+
+    {% if books %}
+    
+        <ol>
+        {% for book in books %}
+            <li><a href="{% url 'book_detail_page' book.id %}">{{book.title}}</a></li>
+        {% endfor %}
+        </ol>
+
+    {% else %}
+
+        <div>
+            <p>Sorry, nothing was found for <b><i>{{search}}</i></b>.</p>
+        </div>
+
+    {% endif %}
+
+    <br><br>
+    <h3><a href="{% url 'profile-page' %}">back to profile</a></h3>
 </body>
 </html>

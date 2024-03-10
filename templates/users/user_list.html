@@ -4,17 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users</title>
+    <style>
+        p {
+            font-size: 1.5em;
+            color: #808080; /* Grayish color */
+        }
+        i{
+            color:#3e3e3e
+        }
+    </style>
 </head>
 <body>
-    <h1>Users</h1>
-    <ol>
-        {% for user in users %}
-            <li>
-                <span>
-                    <strong>First name: </strong>{{user.first_name}} | <strong>Last name: </strong>{{user.last_name}}
-                </span>
-            </li>
-        {% endfor %}
-    </ol>
+    <h1><a href="{% url 'users-page' %}">Users:</a></h1>
+    <form action="" method="get">
+        <input type="text" name = "search" value = "{{search}}" placeholder="Search for user">
+        <button type="submit">Search</button>
+    </form>
+    {% if users %}
+    
+        <ol>
+            {% for user in users %}
+                <li>
+                    <span>
+                        <a href="{% url 'user-detail' user.id %}"><strong>First name: </strong>{{user.first_name}} | <strong>Last name: </strong>{{user.last_name}}</a>
+                    </span>
+                </li>
+            {% endfor %}
+        </ol>    
+
+    {% else %}
+
+        <div>
+            <p>Sorry, nothing was found for <b><i>{{search}}</i></b>.</p>
+        </div>
+
+    {% endif %}
+    <br><br>
+    <h3><a href="{% url 'profile-page' %}">back to profile</a></h3>
 </body>
 </html>
