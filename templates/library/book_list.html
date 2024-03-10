@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book list</title>
+</head>
+<body>
+    <h1><a href="{% url 'book_list_page' %}">Book list:</a></h1>
+    <form action="" method="GET">
+        <input type="text" placeholder="Search for book" name = "search_book_name" value = "{{search}}">
+        <button type="submit">Search</button>
+    </form>
+    <ol>
+    {% for book in books %}
+        <li><a href="{% url 'book_detail_page' book.id %}">{{book.title}}</a></li>
+    {% endfor %}
+    </ol>
+</body>
+</html>

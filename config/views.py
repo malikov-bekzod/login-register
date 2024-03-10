@@ -4,3 +4,8 @@ from django.views import View
 class HomePageView(View):
     def get(self,request):
         return render(request, "home.html")
+    
+
+class ProfilePageView(View):
+    def get(self,request):
+        return render(request, "profile.html")

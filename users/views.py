@@ -6,15 +6,15 @@ from django.contrib.auth.models import User
 class LoginPageView(View):
     def get(self,request):
         return render(request, "users/login.html")
-    
-    def post(self,request):
+
+    def post(self, request):
         username = request.POST["username"]
         users = User.objects.filter(username = username)
-       
+
         if len(users) == 0:
             return redirect("login-page")
         else:
-            return redirect("home_page_name")
+            return redirect("profile-page")
 
 
 class RegisterPageView(View):
@@ -35,8 +35,11 @@ class RegisterPageView(View):
         )
         user.set_password(password)
         user.save()
-        print("<<<<<<<<<<<<<<<<<<<<<<CREATED>>>>>>>>>>>>>>>>")
+        print("<<<<<<<<<<<<<<<<<<<<<<CREATED>>>>>>>>>>>>>>>>>>>>")
         return redirect("login-page")
-        
 
-
+class UserListView(View):
+    def get(self,request):
+        users = User.objects.all()
+        context = {"users":users}
+        return render(request, "users/user_list.html",context)
