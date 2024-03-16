@@ -1,8 +1,11 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render,redirect
 from django.views import View
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from .forms import UserRegisterForm,UserLoginForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 
 class LoginPageView(View):
@@ -10,14 +13,27 @@ class LoginPageView(View):
         return render(request, "users/login.html")
 
     def post(self, request):
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username,password = password)
-
-        if user is None:
-            return redirect("login-page")
+        login_form = AuthenticationForm(data = request.POST)
+        if login_form.is_valid():
+            user = login_form.get_user()
+            login(request,user)
+            context = {"user":user}
+            return render(request, "home.html",context)
         else:
-            return redirect("profile-page")
+            print("errorsss")
+            context = {
+                "form":login_form
+            }
+            return render(request,"users/login.html",context)
+
+        # username = request.POST["username"]
+        # password = request.POST["password"]
+        # user = authenticate(request, username=username,password = password)
+
+        # if user is None:
+        #     return redirect("login-page")
+        # else:
+        #     return redirect("profile-page")
 
 
 class RegisterPageView(View):
@@ -25,22 +41,41 @@ class RegisterPageView(View):
         return render(request, "users/register.html")
 
     def post(self,request):
-        first_name = request.POST["first_name"]
-        last_name = request.POST["last_name"]
-        email = request.POST["email"]
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = User(
-            first_name = first_name,
-            last_name = last_name,
-            email = email,
-            username = username
-        )
-        user.set_password(password)
-        user.save()
+        password1 = request.POST["password1"]
+        password2 = request.POST["password2"]
+        data = {
+            "first_name": request.POST["first_name"],
+            "last_name": request.POST["last_name"],
+            "email": request.POST["email"],
+            "username": request.POST["username"],
+            "password": password1,
+        }
+        user = UserRegisterForm(data=data)
+        if user.is_valid() and password1 == password2:
+            user.save()
+            return redirect("login-page")
+        else:
+            print("ERRor")
+            context = {"form":user}
+            return render(request, "users/register.html",context)
+
+        # first_name = request.POST["first_name"]
+        # last_name = request.POST["last_name"]
+        # email = request.POST["email"]
+        # username = request.POST["username"]
+        # password = request.POST["password"]
+        # user = User(
+        #     first_name = first_name,
+        #     last_name = last_name,
+        #     email = email,
+        #     username = username
+        # )
+        # user.set_password(password)
+        # user.save()
         return redirect("login-page")
 
-class UserListView(View):
+
+class UserListView(LoginRequiredMixin, View):
     def get(self,request):
         search = request.GET.get("search")
         if search is None:
@@ -52,6 +87,9 @@ class UserListView(View):
             users = User.objects.filter(first_name__icontains=search) | User.objects.filter(last_name__icontains=search)
             context = {"users":users,"search":search}
             return render(request, "users/user_list.html", context)
+    def post(self):
+        pass
+
 
 class UserDetailView(View):
     def get(self,request,id):
@@ -102,3 +140,8 @@ class UserSettingsView(View):
             user.set_password(new_password)
             user.save()
             return redirect("users-page")
+
+class LogOutView(View):
+    def get(self,request):
+        logout(request)
+        return redirect("home_page_name")

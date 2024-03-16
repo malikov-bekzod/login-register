@@ -1,10 +1,11 @@
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from .models import Book
 
 
 # Create your views here.
-class BookListView(View):
+class BookListView(LoginRequiredMixin,View):
     def get(self, request):
         search = request.GET.get("search_book_name")
         if search is None:

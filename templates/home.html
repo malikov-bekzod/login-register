@@ -7,6 +7,21 @@
 </head>
 <body>
     <h1>HOME PAGE</h1>
-    <a href="{% url 'login-page' %}">login </a> | <a href="{% url 'register-page' %}"> register</a>
+    <h4>
+        <a href="{% url 'users-page' %}">Users</a> | 
+        <a href="{% url 'book_list_page' %}">Books</a> |
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'user-detail' user.id %}"> {{user.first_name}} </a> | 
+            <a href="{% url 'logout' %}"> log out </a> 
+
+        {% else %}
+
+            <a href="{% url 'login-page' %}">login </a> | 
+            <a href="{% url 'register-page' %}"> register</a> 
+
+        {% endif %}
+       
+    </h4>
 </body>
 </html>
