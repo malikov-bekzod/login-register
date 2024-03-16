@@ -18,7 +18,8 @@ class LoginPageView(View):
             user = login_form.get_user()
             login(request,user)
             context = {"user":user}
-            return render(request, "home.html",context)
+            
+            return render(request,"home.html",context)
         else:
             print("errorsss")
             context = {
